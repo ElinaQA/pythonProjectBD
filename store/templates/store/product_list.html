@@ -4,13 +4,42 @@
 
 {% block content %}
 <h1>Список продуктов</h1>
-<ul>
-    {% for product in products %}
-    <li>
-        <a href="{% url 'product_detail' product.pk %}">{{ product.name }}</a> - {{ product.price }}₽
+
+<!-- Форма фильтрации -->
+<form method="get">
+    <div class="row">
+        <div class="col-md-3">
+            {{ filter.form.name.label_tag }}
+            {{ filter.form.name }}
+        </div>
+        <div class="col-md-3">
+            {{ filter.form.category.label_tag }}
+            {{ filter.form.category }}
+        </div>
+        <div class="col-md-3">
+            {{ filter.form.price.label_tag }}
+            {{ filter.form.price }}
+            <!--{{ filter.form.price.0 }} - {{ filter.form.price.1 }}  Поля для минимальной и максимальной цены -->
+        </div>
+        <div class="col-md-3">
+            {{ filter.form.available.label_tag }}
+            {{ filter.form.available }}
+        </div>
+    </div>
+    <button type="submit" class="btn btn-primary mt-3">Фильтровать</button>
+    <a href="{% url 'product_list' %}" class="btn btn-secondary mt-3">Сбросить</a>
+</form>
+
+<ul class="list-group mt-3">
+    {% for product in filter.qs %}
+    <li class="list-group-item">
+        {{ product.name }} - Цена: {{ product.price }} ₽
+        {% if product.image %}
+        <img src="{{ product.image.url }}" alt="{{ product.name }}" style="width: 50px; height: auto;">
+        {% endif %}
     </li>
     {% empty %}
-    <li>Нет доступных продуктов.</li>
+    <li class="list-group-item">Нет доступных продуктов.</li>
     {% endfor %}
 </ul>
 {% endblock %}
